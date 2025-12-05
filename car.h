@@ -12,9 +12,11 @@ class Car {
         int longth;
         int relativeVelocity;
         std::string shape;
+        bool isexist = true;  // 是否存在
 
-        void controll();
+        // 汽车移动
         void move(int deltaX, int deltaY);
+
     protected:
 
         // 绘制车的形状
@@ -29,8 +31,13 @@ class Car {
 class Player:public Car {
     public:
         Player();
-    private:
+};
 
+// 障碍车
+class Obstacle:public Car {
+    public:
+        Obstacle();
+        void autoMove();
 };
 
 #endif //CAR

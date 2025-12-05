@@ -1,13 +1,11 @@
+#include "game.h"
 #include "support.h"
+#include "map.h"
 #include "car.h"
-#include <iostream>
 
-// 玩家的车
 int main() {
-    hideCursor();
-    SetWindowSize(50, 12);
-    Player playercar;
-    playercar.controll();
-    gotoXY(5,5);
-    system("pause");
+    Game game;
+    game.gameInit();
+    game.run();
+    game.close();
 }

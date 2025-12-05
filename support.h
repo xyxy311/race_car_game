@@ -12,4 +12,7 @@ void gotoXY(const int x, const int y);
 // 获得键盘输入
 char readKey();
 
+// 生成随机数
+int getRandomInt(int min, int max);
+
 # endif // SUPPORT

@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
+#include <random>
 
 // 设置窗口格式
 void SetWindowSize(int cols, int lines) {
@@ -38,4 +39,18 @@ char readKey() {
         return _getch();
     }
     return '\0'; // 无按键
+}
+
+// 生成[min, max]范围内的随机整数
+int getRandomInt(int min, int max) {
+    // 1. 静态随机数引擎和分布器（使用static确保只初始化一次）
+    static std::random_device rd;                    // 硬件随机数种子（初始化引擎）
+    static std::mt19937 rng(rd());                   // 随机数引擎（用硬件种子初始化）
+    static std::uniform_int_distribution<int> dist;  // 均匀分布器（默认范围，后续调整）
+
+    // 2. 调整分布器范围
+    dist.param(std::uniform_int_distribution<int>::param_type(min, max));
+
+    // 3. 生成随机整数
+    return dist(rng);
 }
