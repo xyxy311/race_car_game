@@ -12,7 +12,7 @@ class Car {
         int longth;
         int relativeVelocity;
         std::string shape;
-        bool isexist = true;  // 是否存在
+        bool isexist;  // 是否存在
 
         // 汽车移动
         void move(int deltaX, int deltaY);
@@ -31,12 +31,14 @@ class Car {
 class Player:public Car {
     public:
         Player();
+        void controlMove(char input);
 };
 
 // 障碍车
 class Obstacle:public Car {
     public:
         Obstacle();
+        void generate(int num); // 生成障碍车
         void autoMove();
 };
 
