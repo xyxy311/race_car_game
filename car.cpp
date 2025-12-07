@@ -6,10 +6,8 @@
 
 // 车的移动
 void Car::move(int deltaX, int deltaY) {
-    clearShape();
     x += deltaX;  // 更新位置
     y += deltaY;
-    drawShape();
 }
 
 void Car::moveToXY(int x, int y) {
@@ -37,7 +35,7 @@ void Car::clearShape() {
 
 // 玩家车的构造函数
 Player::Player(){
-    x = 6; // 道路宽14时，车辆刚好在中间位置
+    x = 7; // 道路宽14时，车辆刚好在第3车道
     y = 16;
     width = 3;
     longth = 3;
@@ -83,33 +81,43 @@ Obstacle::Obstacle() {
 // 生成
 void Obstacle::generate(int num, int type) {
     isexist = true;
-    this->x = 3 * num - 2; // 把车道序号(num)映射为x坐标
-
+    x = 3 * num - 2; // 把车道序号(num)映射为x坐标
+    y = 0;
     // 确定车型
     switch (type) {
         case 1:
+            shape = "ioi(0)[_]";
+            width = 3;
+            longth = 3;
+            relativeVelocity = 1;
             break;
         case 2:
-            shape = "/*\\(0)[_]";
-            relativeVelocity = 1;
+            shape = "[|](0)[_]";
+            width = 3;
+            longth = 3;
+            relativeVelocity = 2;
             break;
         case 3:
             shape = "o|0";
             width = 1;
             longth = 3;
             relativeVelocity = 3;
+            x++;  // 确保摩托车在车道中间
+            break;
     }
-
-    y = 0;
 }
 
 // 障碍车自动移动
 void Obstacle::autoMove() {
     if (isexist) {
         move(0, relativeVelocity);
-        if (y >= 23) {
-            clearShape(); // 超出道路则销毁
-            isexist = false;
-        }
+    }
+}
+
+// 销毁障碍车
+void Obstacle::deleteObcar() {
+    if (isexist) {
+        clearShape();
+        isexist = false;
     }
 }

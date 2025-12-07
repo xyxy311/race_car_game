@@ -25,18 +25,14 @@ void Game::run() {
     system("cls");
     boundary();
 
-    // 初始化玩家车
-    playercar.moveToXY(6, 16);
+    // 显示玩家车
     playercar.drawShape();
-
-    // 初始化障碍车
-    for (auto &obcar : obcars) {
-        obcar.isexist = false;
-    }
 
     // 主循环
     while (1) {
-        update(readKey());
+        clearScreen();
+        update(readKey());  // 在这里使用缓冲输入方便测试
+        drawScreen();
         if (isCollision()) {
             break;
         }
@@ -54,12 +50,27 @@ void Game::close() {
     system("pause");
 }
 
+// 清除画面（只包括车）
+void Game::clearScreen() {
+    playercar.clearShape();
+    for (auto& obcar : obcars) {
+        if (obcar.isexist) {
+            obcar.clearShape();
+        }
+    }
+}
+
 // 更新游戏
 void Game::update(char input) {
 
     // 移动玩家车
     if (playercar.isexist) {
         playercar.controlMove(input);
+    }
+    
+    // 更新道路状态
+    for (auto& lane : lanes) {
+        lane.updateByTime();
     }
 
     // 投放障碍车
@@ -69,73 +80,117 @@ void Game::update(char input) {
     for (auto& obcar : obcars) {
         if (obcar.isexist) {
             obcar.autoMove();
+            if (obcar.y > 22) {  // 如果超出道路下边界则销毁
+                obcar.deleteObcar();
+            }
         }
     }
 
-    /*-------测试---------*/
-    obcarsNum = 0;
-    for (auto& obcar : obcars) {
-        if (obcar.isexist) {
-            obcarsNum++;
-        }
-    gotoXY(20,12);
-    std::cout << "障碍车数量" << obcarsNum;
-    }
-    /*-------测试---------*/
+    /*-------测试---------测试---------测试---------测试---------测试---------*/
+    // int obcarsNum = 0;
+    // for (auto& obcar : obcars) {
+    //     if (obcar.isexist) {
+    //         obcarsNum++;
+    //     }
+    // }
+    // gotoXY(20,12);
+    // std::cout << "障碍车数量" << obcarsNum;
+    // gotoXY(20,13);
+    // printf("time = %2d",time);
+    // gotoXY(20,14);
+    // std::cout << "status type time";
+    // for (int i = 0; i < 4; i++) {
+    //     gotoXY(20, 15+i);
+    //     printf("%2d : %2d、%2d、%2d",i+1,lanes[i].status,lanes[i].type,lanes[i].time);
+    // }
+    // n1++;
+    // gotoXY(20, 20);
+    // std::cout << "update: " << n1;
+    /*-------测试---------测试---------测试---------测试---------测试---------*/
 }
 
-// 投放一辆障碍车
-void Game::giveOneCar(int num, int type) {
+// 渲染画面（只包括车）
+void Game::drawScreen() {
+    playercar.drawShape();
     for (auto& obcar : obcars) {
-        if (!obcar.isexist) {
-            obcar.generate(num, type);
-            break;
+        if (obcar.isexist) {
+            obcar.drawShape();
         }
     }
 }
 
 // 投放障碍车
 void Game::giveCar() {
-    if (time == 10) {  // time积累到10时投放
+
+    /*-----测试-----测试-----测试-----测试-----测试-----*/
+    // n3++;
+    // gotoXY(20, 22);
+    // printf("giveCar : %3d",n3);
+    /*-----测试-----测试-----测试-----测试-----测试-----*/
+
+    time++;
+    if (time >= 3) {
         switch (getRandomInt(1, 3)) {
 
             // 2/3的概率投放1量车
             case 1:
             case 2:
-                giveOneCar(getRandomInt(1, 4), getRandomInt(1, 3));
-                time = 0;
+                giveOneCar(getRandomInt(1, 4));
                 break;
 
             // 1/3的概率投放2量车
             case 3:
-                for (int i = 0, j, k; i < 2; i++) {
-
-                    // 确定投放车道j、k的值
-                    switch (j = getRandomInt(1, 4)) {
-                        case 1:
-                        case 2:
-                            k = getRandomInt(j + 1, 4);
-                            break;
-                        case 3:
-                        case 4:
-                            k = getRandomInt(1, j - 1);
-                            break;    
-                    }
-                    giveOneCar(j, getRandomInt(1, 3));
-                    giveOneCar(k, getRandomInt(1, 3));
-                }
-                time = -5;
+                giveOneCar(getRandomInt(1, 4));
+                giveOneCar(getRandomInt(1, 4));
                 break;
         }
+        time = 0;
     }
-    time++; // 积累time
+}
+
+// 投放一辆障碍车
+void Game::giveOneCar(int num) {
+    switch (lanes[num-1].status) {
+        case 0:
+            break;
+
+        case 1:
+            for (auto& obcar : obcars) {
+                if (!obcar.isexist) {
+                    int obtype = 1;
+                    obcar.generate(num, obtype);
+                    lanes[num-1].updateByOb(obtype);
+                    break;
+                }
+            }
+
+        case 2:
+            for (auto& obcar : obcars) {
+                if (!obcar.isexist) {
+                    int obtype = getRandomInt(1, 2);
+                    obcar.generate(num, obtype);
+                    lanes[num-1].updateByOb(obtype);
+                    break;
+                }
+            }
+
+        case 3:
+            for (auto& obcar : obcars) {
+                if (!obcar.isexist) {
+                    int obtype = getRandomInt(1, 3);
+                    obcar.generate(num, obtype);
+                    lanes[num-1].updateByOb(obtype);
+                    break;
+                }
+            }
+    }
 }
 
 // 碰撞判断
 bool Game::isCollision() {
 
     // 判断是否与路边护栏碰撞
-    if (playercar.x == 0 || playercar.x == 11) {
+    if (playercar.x <= 0 || playercar.x >= 11) {
         // 到了道路边界还左（右）移动则判断碰撞
         playercar.isexist = false;
         return true;
@@ -155,6 +210,8 @@ bool Game::isCollision() {
             int oD = obcar.y + obcar.longth - 1;
 
             if (pL <= oR && pR >= oL && pU <= oD && pD >= oU) {
+                playercar.isexist = false;
+                obcar.isexist = false;
                 return true;
             }
         }

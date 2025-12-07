@@ -44,6 +44,7 @@ class Obstacle:public Car {
         Obstacle();
         void generate(int num, int type = 1); // 生成障碍车
         void autoMove();
+        void deleteObcar();  // 销毁障碍车
 };
 
 #endif //CAR

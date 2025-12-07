@@ -4,8 +4,8 @@
 #include "car.h"
 
 int main() {
-    Game game;
     while (1) {
+        Game game;
         game.gameInit();
         game.run();
         game.close();
