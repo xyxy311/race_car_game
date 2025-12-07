@@ -1,7 +1,9 @@
+#ifndef GAME
+#define GAME
+
 #include "car.h"
 
 class Game {
-    friend class test;
     public:
         void gameInit();
         void run();
@@ -9,12 +11,15 @@ class Game {
 
     private:
         Player playercar;
-        Obstacle obcars[5] = {}; // 障碍车组
-        int obcarsNum = 0;  // 障碍车数量
-        int time = 0;  // time决定投放时机
+        Obstacle obcars[3] = {}; // 障碍车组
+        int obcarsNum = 0;     // 障碍车数量
+        int time = 0;     // time决定投放时机
 
-        // 投放障碍车
+        // 投放障碍车主函数
         void giveCar();
+
+        // 从车组投放一辆障碍车，放在第num车道上，速度为relativeVelocity
+        void giveOneCar(int num, int relativeVelocity);
 
         // 更新游戏
         void update(char input);
@@ -23,3 +28,5 @@ class Game {
         bool isCollision();
 
 };
+
+#endif  // GAME

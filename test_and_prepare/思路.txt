@@ -15,3 +15,4 @@
 个人收获：
     可以使用ASCII和windows api移动光标，后者更高效
     使用random库生成随机数
+    不要循环include，可以改为前向声明

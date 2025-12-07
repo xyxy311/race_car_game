@@ -20,9 +20,19 @@ void Game::gameInit() {
 
 // 游戏运行中
 void Game::run() {
+
+    // 地图绘制
     system("cls");
     boundary();
-    playercar.move(0, 0);  // 先显示玩家车
+
+    // 初始化玩家车
+    playercar.moveToXY(6, 16);
+    playercar.drawShape();
+
+    // 初始化障碍车
+    for (auto &obcar : obcars) {
+        obcar.isexist = false;
+    }
 
     // 主循环
     while (1) {
@@ -74,15 +84,48 @@ void Game::update(char input) {
     /*-------测试---------*/
 }
 
+// 投放一辆障碍车
+void Game::giveOneCar(int num, int type) {
+    for (auto& obcar : obcars) {
+        if (!obcar.isexist) {
+            obcar.generate(num, type);
+            break;
+        }
+    }
+}
+
 // 投放障碍车
 void Game::giveCar() {
-    if (time == 5) {  // time积累到5时投放
-        time = 0;
-        for (auto& obcar : obcars) {
-            if (!obcar.isexist) {
-                obcar.generate(getRandomInt(1, 4));
-                return;
-            }
+    if (time == 10) {  // time积累到10时投放
+        switch (getRandomInt(1, 3)) {
+
+            // 2/3的概率投放1量车
+            case 1:
+            case 2:
+                giveOneCar(getRandomInt(1, 4), getRandomInt(1, 3));
+                time = 0;
+                break;
+
+            // 1/3的概率投放2量车
+            case 3:
+                for (int i = 0, j, k; i < 2; i++) {
+
+                    // 确定投放车道j、k的值
+                    switch (j = getRandomInt(1, 4)) {
+                        case 1:
+                        case 2:
+                            k = getRandomInt(j + 1, 4);
+                            break;
+                        case 3:
+                        case 4:
+                            k = getRandomInt(1, j - 1);
+                            break;    
+                    }
+                    giveOneCar(j, getRandomInt(1, 3));
+                    giveOneCar(k, getRandomInt(1, 3));
+                }
+                time = -5;
+                break;
         }
     }
     time++; // 积累time

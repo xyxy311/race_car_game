@@ -12,6 +12,11 @@ void Car::move(int deltaX, int deltaY) {
     drawShape();
 }
 
+void Car::moveToXY(int x, int y) {
+    this->x = x;
+    this->y = y;
+}
+
 // 绘制车的形状
 void Car::drawShape() {
     for (int i = 0; i < longth; i++) {
@@ -40,13 +45,25 @@ Player::Player(){
     shape = "{^}|0|{_}";
     isexist = true;
 }
+
+// 玩家车控制函数
 void Player::controlMove(char input) {
     switch (input) {
+
+    //小幅移动
     case 'a':
         move(-1, 0);
         break;
     case 'd':
         move(1, 0);
+        break;
+
+    //大幅移动
+    case 'q':
+        move(-3, 0);
+        break;
+    case 'e':
+        move(3, 0);
         break;
     }
 }
@@ -57,16 +74,32 @@ Obstacle::Obstacle() {
     y = 0;
     width = 3;
     longth = 3;
-    relativeVelocity = 1;
+    relativeVelocity = 2;
     shape = "[|](0)[_]";
     isexist = false;
 
 }
 
 // 生成
-void Obstacle::generate(int num) {
+void Obstacle::generate(int num, int type) {
     isexist = true;
-    this -> x = 3 * num - 2; // 把几号车道(num)映射为x坐标
+    this->x = 3 * num - 2; // 把车道序号(num)映射为x坐标
+
+    // 确定车型
+    switch (type) {
+        case 1:
+            break;
+        case 2:
+            shape = "/*\\(0)[_]";
+            relativeVelocity = 1;
+            break;
+        case 3:
+            shape = "o|0";
+            width = 1;
+            longth = 3;
+            relativeVelocity = 3;
+    }
+
     y = 0;
 }
 
