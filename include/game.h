@@ -20,6 +20,8 @@ class Game {
         int timeTo = 3;     // time积累到timeTo时可投放障碍车，timeTo反映障碍车投放最小距离
 
         bool notNoStop;  // 是否为无敌模式
+        
+        int s = 0;      // 记录玩家车行驶里程（m）
 
         // 投放障碍车主函数
         void giveCar();
@@ -41,10 +43,6 @@ class Game {
 
         // 仪表
         void panel();
-
-        // 记录玩家车行驶里程（m）
-        int s = 0;
-
 };
 
 #endif  // GAME_H

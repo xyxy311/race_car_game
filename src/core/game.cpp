@@ -199,14 +199,14 @@ bool Game::isCollision() {
     int pL = playercar.x;  // 玩家车左边界
     int pR = playercar.x + playercar.width - 1;
     int pU = playercar.y;   // 玩家车上边界
-    int pD = playercar.y + playercar.longth - 1;
+    int pD = playercar.y + playercar.length - 1;
     
     for (auto& obcar : obcars) { //遍历障碍车以判断碰撞
         if (obcar.isexist) {
             int oL = obcar.x;  // 障碍车左边界
             int oR = obcar.x + obcar.width - 1;
             int oU = obcar.y;
-            int oD = obcar.y + obcar.longth - 1;
+            int oD = obcar.y + obcar.length - 1;
 
             if (pL <= oR && pR >= oL && pU <= oD && pD >= oU) {
                 playercar.isexist = false;

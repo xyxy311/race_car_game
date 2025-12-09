@@ -25,7 +25,7 @@ class Car {
         int x;  // 位置以车辆左上处为准
         int y;
         int width;
-        int longth;
+        int length;
 
         std::string shape;
         bool isexist;  // 是否存在

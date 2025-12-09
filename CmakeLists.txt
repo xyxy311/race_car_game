@@ -1,0 +1,23 @@
+# 指定 CMake 最低版本要求
+cmake_minimum_required(VERSION 3.10)
+
+# 项目名称
+project(CCRaceCar)
+
+# 设置 C++ 标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 头文件目录
+include_directories(include)
+
+# 收集所有源文件
+file(GLOB_RECURSE SOURCE_FILES
+    "src/*.cpp"
+)
+
+# 可执行文件
+add_executable(ccracecar ${SOURCE_FILES})
+
+# 设置可执行文件的输出目录
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

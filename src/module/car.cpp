@@ -23,7 +23,7 @@ void Car::moveToXY(int x, int y) {
 
 // 绘制车的形状
 void Car::drawShape() {
-    for (int i = 0; i < longth; i++) {
+    for (int i = 0; i < length; i++) {
         gotoXY(x, y + i); // 定位到第 i 行
         std::cout << shape.substr(i * width, width) << std::flush;
     }
@@ -32,7 +32,7 @@ void Car::drawShape() {
 // 擦除车的形状
 void Car::clearShape() {
     gotoXY(x, y);
-    for (int i = 0; i < longth; i++) {
+    for (int i = 0; i < length; i++) {
         gotoXY(x, y + i);
         std::cout << std::string(width, ' ') << std::flush;
     }
@@ -44,7 +44,7 @@ Player::Player(){
     x = 7; // 道路宽14时，车辆刚好在第3车道
     y = 16;
     width = 3;
-    longth = 3;
+    length = 3;
     velocity = 17.0f;  //17.0代表17m/s 约等于 60km/h
     shape = "{^}|0|{_}";
     isexist = true;
@@ -78,7 +78,7 @@ Obstacle::Obstacle() {
     x = 1;
     y = 0;
     width = 3;
-    longth = 3;
+    length = 3;
     relativeVelocity = 2;
     shape = "[|](0)[_]";
     isexist = false;
@@ -95,19 +95,19 @@ void Obstacle::generate(int num, int type) {
         case 1:
             shape = "ioi(0)[_]";
             width = 3;
-            longth = 3;
+            length = 3;
             relativeVelocity = 1;
             break;
         case 2:
             shape = "[|](0)[_]";
             width = 3;
-            longth = 3;
+            length = 3;
             relativeVelocity = 2;
             break;
         case 3:
             shape = "o|0";
             width = 1;
-            longth = 3;
+            length = 3;
             relativeVelocity = 3;
             x++;  // 确保摩托车在车道中间
             break;
