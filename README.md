@@ -42,12 +42,12 @@ cc_car/
 
 # 构建方式
 
-构建方式如下：
+使用MinGW构建方式如下：
 在控制台中切换到cc_car目录，执行以下命令：
 ```
 mkdir build
 cd build
-cmake ..
-make
+cmake .. -G "MinGW Makefiles"
+mingw32-make
 ```
 运行后会在 bin 目录中生成 ccracecar.exe
