@@ -8,6 +8,12 @@
 void Car::move(int deltaX, int deltaY) {
     x += deltaX;  // 更新位置
     y += deltaY;
+
+    // 防止越界
+    if (x < 1)
+        x = 1;
+    if (x > 10)
+        x = 10;
 }
 
 void Car::moveToXY(int x, int y) {
@@ -39,31 +45,32 @@ Player::Player(){
     y = 16;
     width = 3;
     longth = 3;
-    relativeVelocity = 0;
+    velocity = 17.0f;  //17.0代表17m/s 约等于 60km/h
     shape = "{^}|0|{_}";
     isexist = true;
 }
 
 // 玩家车控制函数
-void Player::controlMove(char input) {
-    switch (input) {
+void Player::controlMove() {
 
-    //小幅移动
-    case 'a':
-        move(-1, 0);
-        break;
-    case 'd':
-        move(1, 0);
-        break;
+    // 向左移动
+        if (GetAsyncKeyState('A') & 0x8000)  // 检测A是否持续按下
+            move(-1, 0);                     // 小幅持续移动
+        if (GetAsyncKeyState('Q') & 0x0001)  // 检测Q是否刚被按下
+            move(-3, 0);                     // 大幅一次性移动
 
-    //大幅移动
-    case 'q':
-        move(-3, 0);
-        break;
-    case 'e':
-        move(3, 0);
-        break;
-    }
+    // 向右移动，和上面类似
+        if (GetAsyncKeyState('D') & 0x8000)
+            move(1, 0);
+        if (GetAsyncKeyState('E') & 0x0001)
+            move(3, 0);
+
+    // 加速和减速
+    if (GetAsyncKeyState('W') & 0x0001)
+        velocity = velocity + 0.5f < 55.6f ? velocity + 0.5f : 55.6f; // 55.6为最大速度(200km/h)
+    if (GetAsyncKeyState('S') & 0x0001)
+        velocity = velocity - 3.5f > 10.0f ? velocity - 1.5f : 10.0f; // 10.0为最小速度(36km/h)
+
 }
 
 // 障碍车

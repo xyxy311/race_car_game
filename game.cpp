@@ -2,28 +2,28 @@
 #include "support.h"
 #include "map.h"
 #include "car.h"
-#include "windows.h"
+#include "menu.h"
+#include <windows.h>
 #include <iostream>
 
 // 游戏初始化
 void Game::gameInit() {
-    system("cls");
-    hideCursor(); // 隐藏光标
-
-    gotoXY(4,11);
-    std::cout << "CC飞车";
-
-    gotoXY(4,15);
-    std::cout << "按回车键开始游戏";
-    getchar();
+    notNoStop = (showMenu() == 'u' ? true : false);
 }
 
 // 游戏运行中
 void Game::run() {
-
     // 地图绘制
     system("cls");
     boundary();
+
+    // 无敌模式下的提示信息
+    if (!notNoStop) {
+        gotoXY(16, 1);
+        std::cout << "Enjoy your drive!";
+        gotoXY(16, 2);
+        std::cout << "Ctrl+C to quit";
+    }
 
     // 显示玩家车
     playercar.drawShape();
@@ -31,12 +31,13 @@ void Game::run() {
     // 主循环
     while (1) {
         clearScreen();
-        update(readKey());  // 在这里使用缓冲输入方便测试
+        update();  // 在这里使用缓冲输入方便测试
         drawScreen();
-        if (isCollision()) {
+        panel();
+        if (notNoStop && isCollision()) {
             break;
         }
-        Sleep(100);
+        Sleep(1 / playercar.velocity * 1000);
     }
 
 }
@@ -46,7 +47,9 @@ void Game::close() {
     Sleep(1000);
     system("cls");
     gotoXY(3,11);
-    std::cout << "GAME OVER!" << std::endl;
+    std::cout << "GAME OVER!";
+    gotoXY(3,12);
+    std::cout << "You've driven " << s << " meters" << std::endl;
     system("pause");
 }
 
@@ -61,11 +64,11 @@ void Game::clearScreen() {
 }
 
 // 更新游戏
-void Game::update(char input) {
+void Game::update() {
 
     // 移动玩家车
     if (playercar.isexist) {
-        playercar.controlMove(input);
+        playercar.controlMove();
     }
     
     // 更新道路状态
@@ -85,28 +88,6 @@ void Game::update(char input) {
             }
         }
     }
-
-    /*-------测试---------测试---------测试---------测试---------测试---------*/
-    // int obcarsNum = 0;
-    // for (auto& obcar : obcars) {
-    //     if (obcar.isexist) {
-    //         obcarsNum++;
-    //     }
-    // }
-    // gotoXY(20,12);
-    // std::cout << "障碍车数量" << obcarsNum;
-    // gotoXY(20,13);
-    // printf("time = %2d",time);
-    // gotoXY(20,14);
-    // std::cout << "status type time";
-    // for (int i = 0; i < 4; i++) {
-    //     gotoXY(20, 15+i);
-    //     printf("%2d : %2d、%2d、%2d",i+1,lanes[i].status,lanes[i].type,lanes[i].time);
-    // }
-    // n1++;
-    // gotoXY(20, 20);
-    // std::cout << "update: " << n1;
-    /*-------测试---------测试---------测试---------测试---------测试---------*/
 }
 
 // 渲染画面（只包括车）
@@ -121,15 +102,8 @@ void Game::drawScreen() {
 
 // 投放障碍车
 void Game::giveCar() {
-
-    /*-----测试-----测试-----测试-----测试-----测试-----*/
-    // n3++;
-    // gotoXY(20, 22);
-    // printf("giveCar : %3d",n3);
-    /*-----测试-----测试-----测试-----测试-----测试-----*/
-
     time++;
-    if (time >= 3) {
+    if (time >= timeTo) {
         switch (getRandomInt(1, 3)) {
 
             // 2/3的概率投放1量车
@@ -184,6 +158,31 @@ void Game::giveOneCar(int num) {
                 }
             }
     }
+}
+
+// 速度仪表
+void Game::panel() {
+    int speed = (int) (playercar.velocity * 3.6);
+    
+    // 显示车速数值
+    gotoXY(16, 27);
+    printf("%4dkm/h", speed);
+
+    // 显示图形表示车速
+    gotoXY(16, 26);
+    std::cout << "speed";
+    for (int i = 0; i < speed/10; i++) {
+        gotoXY(16, 25 - i);
+        std::cout<<"▇";
+    }
+    for (int i = speed/10; i < 20; i++) {
+        gotoXY(16, 25 - i);
+        std::cout<<" ";
+    }
+
+    // 显示里程
+    gotoXY(16, 28);
+    printf("%4dm", s++);
 }
 
 // 碰撞判断

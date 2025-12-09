@@ -5,8 +5,8 @@
 #include <random>
 
 // 设置窗口格式
-void SetWindowSize(int cols, int lines) {
-    system("title cc飞车");  // 设置窗口标题
+void setWindowFormat(int cols, int lines) {
+    system("title cc race car");  // 设置窗口标题
 
     char cmd[30];  // 设置缓冲区大小
     sprintf(cmd, "mode con cols=%d lines=%d", cols, lines);
@@ -33,12 +33,23 @@ void gotoXY(const int x, const int y) {
     SetConsoleCursorPosition(hConsole, position);
 }
 
-// 获得键盘输入
+// 设置文本颜色
+void setColor(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
+// 读取按键（只用于菜单操作）
 char readKey() {
-    if (_kbhit()) {
-        return _getch();
-    }
-    return '\0'; // 无按键
+    char key = getch();
+        switch (key) {
+            case 'w': // 上方向键
+                return 'u';
+            case 's': // 下方向键
+                return 'd';
+            case 13 : // 回车键
+                return 'y';
+        }
+    return 'n';
 }
 
 // 生成[min, max]范围内的随机整数

@@ -1,5 +1,5 @@
-#ifndef CAR
-#define CAR
+#ifndef CAR_H
+#define CAR_H
 
 #include <string>
 
@@ -26,25 +26,31 @@ class Car {
         int y;
         int width;
         int longth;
-        int relativeVelocity;
+
         std::string shape;
         bool isexist;  // 是否存在
 };
 
 // 玩家的赛车
 class Player:public Car {
+    friend class Game;
     public:
         Player();
-        void controlMove(char input);
+        void controlMove();
+    private:
+        float velocity;
 };
 
 // 障碍车
 class Obstacle:public Car {
+    friend class Game;
     public:
         Obstacle();
         void generate(int num, int type = 1); // 生成障碍车
         void autoMove();
         void deleteObcar();  // 销毁障碍车
+    private:
+        int relativeVelocity;
 };
 
-#endif //CAR
+#endif //CAR_H
